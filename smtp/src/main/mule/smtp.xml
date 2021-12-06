@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f228dc4e-d183-46c4-9b03-47710a1078b9" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="8308efc3-b4af-4d33-9400-2f7ab8192cc1" >
+		<email:smtp-connection host="smtp.gmail.com" port="587" user="kranand25@gmail.com" password="9676911510" >
+			<email:properties >
+				<email:property key="mail.smtp.starttls.enable" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="ed6d3273-794b-4e77-a0a9-1efdea004fa1" />
+	<file:config name="File_Config1" doc:name="File Config" doc:id="fcc7623d-3b4d-4f18-91f2-33752fdaf305" />
+	<flow name="smtpFlow" doc:id="3e725870-81ff-4a60-901d-cea57f0b2611" >
+		<http:listener doc:name="Listener" doc:id="f243cd61-3052-447e-ac4d-0d2b6b80a57c" config-ref="HTTP_Listener_config" path="smtp"/>
+		<file:read doc:name="Read" doc:id="a77fab1e-afd6-467a-b57e-44ed925112ca" config-ref="File_Config1" path="C:\Users\User\Desktop\Destination\PQR.json"/>
+		<email:send doc:id="9d082f0a-cab4-4689-a40e-80c0186ba97d" config-ref="Email_SMTP" fromAddress="kranand25@gmail.com" subject="mail from smtp">
+			<email:to-addresses >
+				<email:to-address value="ramyajyothi293@gmail.com" />
+				<email:to-address value="kranand25@gmail.com" />
+			</email:to-addresses>
+			<email:body >
+				<email:content ><![CDATA[hi today i learned SMPT]]></email:content>
+			</email:body>
+			<email:attachments ><![CDATA[#[{
+	"PQR.json": payload
+}]]]></email:attachments>
+		</email:send>
+		<logger level="INFO" doc:name="Logger" doc:id="2ded6c7c-674d-443d-8cea-917a8ac53788" message="output successful "/>
+	</flow>
+</mule>
